@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComandroOS: FAQ para Distribuidoras e OEMs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #004d99;
+            border-bottom: 2px solid #004d99;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #333;
+            margin-top: 20px;
+            border-left: 3px solid #ff9800;
+            padding-left: 10px;
+        }
+        .faq-answer {
+            margin-left: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+        }
+        .contact-box {
+            background-color: #e6f7ff;
+            border: 1px solid #99d6ff;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            ❓ FAQ para Parceiros: Distribuidoras e Fabricantes (OEMs)
+        </h1>
+
+        <p>
+            Esta seção é dedicada a responder as perguntas mais comuns de parceiros de hardware e distribuidores de sistemas operacionais que buscam utilizar a tecnologia ComandroOS em seus produtos.
+        </p>
+
+        <h2>1. Licenciamento e Adoção</h2>
+        
+        <h3>O ComandroOS é realmente código aberto? Podemos usá-lo gratuitamente?</h3>
+        <div class="faq-answer">
+            <p><strong>Sim.</strong> O kernel core do ComandroOS está licenciado sob [Licença Simluada, ex: Apache 2.0], permitindo o uso, modificação e distribuição gratuitos. Você tem permissão para usar e integrar o ComandroOS em seus produtos sem custos de licenciamento.</p>
+        </div>
+
+        <h3>Qual é o papel da Comandro LLC no licenciamento?</h3>
+        <div class="faq-answer">
+            <p>A **Comandro LLC** não cobra pelo software em si. A LLC oferece **serviços e suporte**. Se sua empresa precisa de Garantia de Nível de Serviço (SLA), suporte de portabilidade de hardware (porting) ou customizações de *drivers* proprietários, você contratará os serviços da Comandro LLC.</p>
+        </div>
+
+        <h3>Podemos adicionar nosso próprio código proprietário?</h3>
+        <div class="faq-answer">
+            <p><strong>Sim.</strong> A natureza da licença (ex: Apache 2.0) permite que você vincule seu código proprietário (como *drivers* fechados ou interfaces de usuário customizadas) ao kernel core, desde que você cumpra os termos da licença base para as modificações feitas no código aberto.</p>
+        </div>
+
+        <h2>2. Suporte Técnico e Customização</h2>
+
+        <h3>A Comandro LLC oferece portabilidade para hardware novo/customizado?</h3>
+        <div class="faq-answer">
+            <p><strong>Sim, este é o nosso principal serviço.</strong> Nossa equipe de engenheiros de kernel é especializada em adaptar a arquitetura de baixa latência do ComandroOS (Rust e C/C++) para novas arquiteturas de chipset, garantindo que o KPI de latência seja mantido em seu hardware específico. Isso é oferecido sob contrato de serviço com a Comandro LLC.</p>
+        </div>
+
+        <h3>Quais são os SLAs de suporte que vocês oferecem?</h3>
+        <div class="faq-answer">
+            <p>Oferecemos múltiplos níveis de suporte empresarial, desde o Nível 1 (suporte por e-mail, tempo de resposta de 24h) até o Nível 3 (acesso direto a engenheiros de kernel sênior, tempo de resposta crítico de 2h para falhas de produção). Detalhes contratuais são definidos após a consulta inicial.</p>
+        </div>
+
+        <h3>É possível personalizar a sequência de Fastboot e a tela de erro (no_device.js)?</h3>
+        <div class="faq-answer">
+            <p><strong>Sim.</strong> A maioria dos componentes de UI de *bootloader* e erro são modulares. A Comandro LLC pode fornecer serviços para personalizar a interface (JS/HTML), a mensagem de erro e a política de segurança do OCaml para corresponder à sua marca e requisitos de segurança.</p>
+        </div>
+
+        <h2>3. Atualizações (OTA) e Segurança</h2>
+        
+        <h3>Como gerenciamos atualizações de kernel em nossos dispositivos?</h3>
+        <div class="faq-answer">
+            <p>O ComandroOS utiliza um robusto sistema de atualização A/B (Zero-Downtime) e o serviço <code>OtaRadioService</code>. Sua empresa pode escolher usar nossa infraestrutura OTA gerenciada (serviço pago da LLC) ou integrar o sistema de atualização do ComandroOS em sua própria infraestrutura de distribuição.</p>
+        </div>
+
+        <h3>Qual é o impacto de segurança do Rust no kernel?</h3>
+        <div class="faq-answer">
+            <p>O uso do Rust em *drivers* críticos (como <code>touchscreen.rs</code>) elimina uma classe inteira de vulnerabilidades de segurança (como *buffer overflows* e *data races*), tornando o ComandroOS significativamente mais seguro em comparação com kernels puramente C. Nossas auditorias de segurança são transparentes e focadas no código C/C++ restante.</p>
+        </div>
+
+        <div class="contact-box">
+            <h2>Próximos Passos</h2>
+            <p>Para iniciar uma parceria, discutir requisitos de hardware ou solicitar um orçamento de serviço, entre em contato com nossa equipe comercial:</p>
+            <p><strong>E-mail:</strong> <a href="mailto:partnerships@comandro.com">partnerships@comandro.com</a></p>
+            <p><strong>Telefone:</strong> não temos</p>
+        </div>
+
+    </div>
+</body>
+</html>
