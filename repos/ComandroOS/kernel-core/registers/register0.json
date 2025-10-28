@@ -1,0 +1,34 @@
+{
+  "register_id": "R0_CRITICAL_BOOT_CYCLE",
+  "version": 1,
+  "description": "Estado inicial dos registradores do SoC apos o bootloader, antes de configurar a MMU e o scheduler. Contem o MSR (Machine Status Register) inicial e o mapeamento de memoria temporario.",
+  
+  "cpu_state": {
+    "architecture": "ARM64",
+    "boot_mode": "EL2_HYPERVISOR",
+    "initial_core_count": 1,
+    "msr_value": "0x3C500400"
+  },
+  
+  "memory_setup": {
+    "temporary_mmu_enabled": false,
+    "kernel_base_address": "0x80000000",
+    "kernel_size_bytes": 16777216,
+    "stack_pointer_sp": "0x81000000"
+  },
+  
+  "hardware_io": {
+    "greetings_port_address": "0xF0000000",
+    "uart_speed_baud": 115200,
+    "interrupt_controller_mode": "GICv3",
+    "gic_distributor_base": "0xFF000000"
+  },
+  
+  "security_flags": {
+    "secure_boot_verified": true,
+    "next_stage_expected_checksum": "0x9E3B4F5A",
+    "disable_smp_on_boot": true
+  },
+  
+  "next_action": "JUMP_TO_ENTRY_POINT"
+}
