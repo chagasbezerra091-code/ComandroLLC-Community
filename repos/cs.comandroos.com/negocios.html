@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComandroOS: Negócios e Contribuições</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #004d99;
+            border-bottom: 2px solid #004d99;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+        }
+        p, ul {
+            margin-bottom: 20px;
+        }
+        .contribution-section {
+            background-color: #e6f7ff;
+            border: 1px solid #99d6ff;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .github-button {
+            display: inline-block;
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: #333; /* Cor do GitHub */
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+        }
+        .github-button:hover {
+            background-color: #555;
+        }
+        .financial-model {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .financial-model h3 {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            💼 Estrutura Financeira e Contribuições do ComandroOS
+        </h1>
+
+        <h2>1. Quem Recebe o Dinheiro?</h2>
+        
+        <div class="financial-model">
+            <h3>Modelo de Financiamento e Sustentabilidade</h3>
+            
+            <p>O ComandroOS é um projeto de kernel de código aberto, mantido por uma fundação sem fins lucrativos (ou equivalente) chamada <strong>ComandroOS Foundation</strong>, registrada em Natal RN.</p>
+            
+            <p><strong>Toda a receita gerada pelo projeto é canalizada da seguinte forma:</strong></p>
+            
+            <ul>
+                <li><strong>70% - Pesquisa e Desenvolvimento (P&D):</strong> Destinado a cobrir salários de desenvolvedores de kernel em tempo integral, custos de hardware para testes (placas de desenvolvimento, chips) e infraestrutura de CI/CD (Integração Contínua/Entrega Contínua).</li>
+                <li><strong>20% - Fundo de Subsídios e Recompensas (Bounties):</strong> Reservado para premiar contribuidores da comunidade por correções de bugs críticos (security bounties), novos drivers ou desenvolvimento de subsistemas específicos.</li>
+                <li><strong>10% - Custos Operacionais e Legais:</strong> Usado para manutenção do domínio, serviços de nuvem, auditorias de segurança e custos legais da Fundação.</li>
+            </ul>
+
+            <p><strong>Nenhum indivíduo ou empresa privada recebe lucros diretos da Fundação.</strong> O objetivo principal é garantir a estabilidade e a evolução contínua do kernel.</p>
+        </div>
+
+        <h2>2. Contribua com o Kernel Core</h2>
+        
+        <p>A alma do ComandroOS reside no seu código-fonte de baixo nível. Aceitamos contribuições (código, documentação, testes) para todos os subsistemas, especialmente:</p>
+        
+        <ul>
+            <li>Drivers em Rust (ex: <code>touchscreen.rs</code>)</li>
+            <li>Rotinas de baixa latência em C/C++ (ex: <code>JavaFilesEngine.cc</code>)</li>
+            <li>Otimizações no Agendador de Tarefas (Scheduler)</li>
+        </ul>
+
+        <div class="contribution-section">
+            <h3>Junte-se ao Nosso Esforço de Desenvolvimento no GitHub!</h3>
+            <p>Se você deseja enviar *pull requests*, reportar bugs ou participar de discussões de arquitetura, comece fazendo login no GitHub.</p>
+            
+            <a href="https://github.com/ComandroOS/kernel-core/contribute" class="github-button" target="_blank">
+                Login via GitHub & Contribuir
+            </a>
+            <p style="margin-top: 10px; font-size: 0.9em;">(Você será redirecionado para o nosso repositório oficial.)</p>
+        </div>
+        
+        <h2>3. Processo de Revisão (Code Review)</h2>
+        <p>Todas as contribuições passam por um rigoroso processo de revisão de código, focado em:</p>
+        <ul>
+            <li><strong>Segurança:</strong> Análise de Rust (memory safety) e C++ (buffer overflows).</li>
+            <li><strong>Latência:</strong> Impacto da mudança no KPI de 1ms de I/O.</li>
+            <li><strong>Estilo:</strong> Conformidade com os padrões de codificação do ComandroOS.</li>
+        </ul>
+
+    </div>
+</body>
+</html>
