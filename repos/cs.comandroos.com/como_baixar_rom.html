@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComandroOS: Como Baixar a ROM Oficial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #004d99;
+            border-bottom: 2px solid #004d99;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+        }
+        p, ul, ol {
+            margin-bottom: 20px;
+        }
+        .download-button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: #ff9800; /* Laranja para destaque de download */
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        .download-button:hover {
+            background-color: #e68900;
+        }
+        .warning-box {
+            border-left: 5px solid #cc0000;
+            background-color: #ffeeee;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            📥 Baixando a ROM Oficial do ComandroOS
+        </h1>
+
+        <p>
+            Existem duas maneiras principais de obter o firmware do ComandroOS: baixando os binários pré-compilados e verificados (recomendado para usuários finais) ou compilando o código-fonte (recomendado para desenvolvedores e testadores).
+        </p>
+
+        <h2>1. Opção A: Download de Binários Estáveis</h2>
+        
+        <p>
+            Para a maioria dos usuários, a forma mais segura de obter o firmware é através dos pacotes de ROM pré-compilados, que já passaram pela verificação de Hash e Assinatura da ComandroOS Foundation.
+        </p>
+
+        <h3>Etapas de Download:</h3>
+        <ol>
+            <li><strong>Selecione o Dispositivo:</strong> Navegue até a página de Downloads e selecione o modelo exato do seu hardware (ex: <code>COMANDRO-DVL-01</code>).</li>
+            <li><strong>Escolha a Versão:</strong> Selecione a versão estável mais recente (ex: <code>v2.1.0-Release</code>).</li>
+            <li><strong>Baixe o Pacote:</strong> O pacote principal (<code>.zip</code> ou <code>.tar.gz</code>) contém todas as partições (boot, system, recovery, cache) necessárias para o *flashing* via Fastboot.</li>
+        </ol>
+
+        <a href="https://downloads.comandroos.com/official_releases" class="download-button" target="_blank">
+            Ir para a Página de Downloads Oficiais
+        </a>
+
+        <div class="warning-box">
+            <strong>AVISO CRÍTICO:</strong> O ComandroOS é um sistema de baixo nível. Use apenas binários que correspondam EXATAMENTE ao seu modelo de dispositivo. A tentativa de *flashing* de uma ROM incompatível resultará em **"brick"** (consulte <code>no_device.js</code>) e anulará a garantia.
+        </div>
+
+        <h2>2. Opção B: Compilando a ROM (Build from Source)</h2>
+
+        <p>
+            Desenvolvedores que desejam modificar o kernel (C/C++, Rust) ou o *runtime* Java devem compilar a ROM a partir do código-fonte completo.
+        </p>
+        
+        <h3>Processo de Build (Resumo):</h3>
+        <ol>
+            <li><strong>Clone o Repositório:</strong> Utilize o Git para clonar o repositório principal do kernel.
+                <div class="code-block">
+                    git clone https://github.com/ComandroOS/kernel-core.git
+                </div>
+            </li>
+            <li><strong>Ferramentas:</strong> Garanta que você tenha o Toolchain de Compilação (GCC/Clang, Rust Nightly) e o SDK de Build do ComandroOS instalados.</li>
+            <li><strong>Compilação:</strong> Execute o script de build. Isso irá compilar o kernel, os drivers Rust (incluindo <code>touchscreen.rs</code>) e o *runtime* Java.
+                <div class="code-block">
+                    ./build.sh --target COMANDRO-DVL-01 --release
+                </div>
+            </li>
+            <li><strong>Saída:</strong> Os arquivos de imagem gerados (<code>boot.img</code>, <code>system.img</code>) estarão na pasta <code>out/images/</code> e estarão prontos para serem usados com a ferramenta <code>fastboot</code>.</li>
+        </ol>
+
+        <p>
+            Para instruções detalhadas de como configurar o ambiente de build, consulte a nossa <a href="https://docs.comandroos.com/guide/building_kernel" target="_blank">Documentação de Compilação de Kernel</a>.
+        </p>
+
+    </div>
+</body>
+</html>
