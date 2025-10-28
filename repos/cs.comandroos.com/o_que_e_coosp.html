@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O que é COOSP? | ComandroOS Open Source Project</title>
+    <style>
+        /* Estilos basicos para documentacao */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f9; color: #333; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        header { background-color: #007bff; color: white; padding: 15px 0; text-align: center; border-radius: 8px 8px 0 0; }
+        header h1 { margin: 0; font-size: 2.2em; }
+        .content h2 { color: #0056b3; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px; }
+        .content p { margin-bottom: 20px; }
+        ul { list-style-type: disc; margin-left: 20px; }
+        .key-feature { background-color: #e9f5ff; border-left: 5px solid #007bff; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        footer { text-align: center; padding: 20px; margin-top: 30px; border-top: 1px solid #ddd; font-size: 0.9em; color: #666; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ComandroOS Open Source Project (COOSP)</h1>
+        <p>A Plataforma de Tempo Real para o Futuro Mobile.</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="content">
+            
+            <h2>⭐ O que é o COOSP?</h2>
+            
+            <p>
+                O **ComandroOS Open Source Project (COOSP)** é a base aberta do sistema operacional ComandroOS. Ele é um projeto de kernel e sistema de tempo real (RTOS) focado em resolver os problemas fundamentais de latência e imprevisibilidade inerentes aos sistemas operacionais móveis tradicionais, como o Android/Linux.
+            </p>
+            <p>
+                Nossa missão é criar uma plataforma onde a **latência de ponta a ponta** (do toque à resposta visual/sonora) seja medida em **microssegundos** e **garantida** pelo *Scheduler* do kernel.
+            </p>
+
+            <div class="key-feature">
+                <strong>💡 Princípio Central:</strong> No COOSP, a baixa latência não é uma otimização; é uma **garantia arquitetural** imposta pelo kernel e pela Máquina Virtual de Aplicação (RTGC).
+            </div>
+
+            <h2>🚀 Pilares Tecnológicos do COOSP Core</h2>
+            
+            <p>O sucesso do COOSP repousa em três pilares principais, que substituem ou otimizam radicalmente os componentes legados:</p>
+            
+            <ul>
+                <li>
+                    <strong>Kernel de Tempo Real Híbrido:</strong> Substituição do scheduler CFQ/EAS do Linux por um Scheduler Híbrido **RT/CRAN** que prioriza threads críticas (Áudio, V-Sync, Toque) com base em prioridade estática (RT) e agendamento justo para o resto (CRAN).
+                </li>
+                <li>
+                    <strong>RTGC (Real-Time Garbage Collector):</strong> Máquina Virtual de Aplicação (Java/Kotlin) com um Garbage Collector **Preemptivo e Incremental** (desenvolvido em Rust), que garante pausas de coleta de lixo inferiores a 500 $\mu \text{s}$, eliminando o "engasgo" de GC.
+                </li>
+                <li>
+                    <strong>IPC de Baixa Latência:</strong> Otimização do sistema de comunicação entre processos (IPC, análogo ao Binder) para garantir que as mensagens entre o aplicativo e o kernel (e vice-versa) sejam entregues em menos de 1 milissegundo.
+                </li>
+            </ul>
+
+            <h2>🛠️ Para Quem é o COOSP?</h2>
+            
+            <p>O COOSP é destinado a:</p>
+            
+            <ul>
+                <li>
+                    **Fabricantes de Hardware (OEMs):** Que desejam construir dispositivos móveis ou de Realidade Aumentada (AR/VR) com performance e latência superiores aos padrões de mercado.
+                </li>
+                <li>
+                    **Desenvolvedores de Aplicações Críticas:** Para criar experiências onde a precisão de tempo é vital (Música, Jogos de eSports, Controles Industriais, Interfaces Táteis).
+                </li>
+                <li>
+                    **Pesquisadores de Sistemas Operacionais:** Interessados em schedulers de tempo real e arquitetura de VM moderna (Rust/C++).
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 ComandroOS Open Source Project. Kernel-Core em Desenvolvimento.</p>
+        <p>Saiba mais sobre o nosso <a href="documentacao.html">PDK (Platform Development Kit)</a>.</p>
+    </footer>
+
+</body>
+</html>
