@@ -1,0 +1,66 @@
+#
+# comandro_defconfig - Configuracao padrao para ComandroOS (Linux base)
+# Otimizado para dispositivos mobile ARM64.
+#
+
+# --- Arquitetura e Kernel Core ---
+CONFIG_ARM64=y
+CONFIG_HIGH_RES_TIMERS=y
+CONFIG_NO_HZ_FULL=y               # Tickless kernel para menor latencia
+CONFIG_PREEMPT_RT=y               # Preempt Real-Time (se disponivel na versao)
+CONFIG_HZ_1000=y                  # Frequencia do timer em 1000Hz
+CONFIG_SCHED_SMT=n                # Desabilita SMT (melhor previsibilidade de latencia)
+
+# --- Gerenciamento de Memoria ---
+CONFIG_SWAP=n                     # Sem swap para latencia garantida
+CONFIG_CMA=y                      # Contiguous Memory Allocator para buffers de video/camera
+
+# --- Dispositivos Mobile Essenciais ---
+CONFIG_ARCH_QCOM=y                # Exemplo: Suporte para SoC Qualcomm (muito comum em mobile)
+CONFIG_COMMON_CLK_QCOM=y
+CONFIG_GPIO_QCOM_SPMI=y
+
+# --- Display e Graficos ---
+CONFIG_DRM=y
+CONFIG_DRM_MSM=y                  # Driver DRM para Qualcomm Adreno (GPU)
+CONFIG_FB=y
+CONFIG_TOUCHSCREEN_SYNAPTICS_I2C=y
+CONFIG_BACKLIGHT_PWM=y
+
+# --- Audio ---
+CONFIG_SND=y
+CONFIG_SND_SOC=y
+CONFIG_SND_SOC_MSM=y              # Driver de Audio para Qualcomm
+CONFIG_SND_PCM_OSS=y
+CONFIG_SND_PCM_OSS_PLUGINS=y
+
+# --- Rede e Conectividade ---
+CONFIG_NET=y
+CONFIG_WLAN=y
+CONFIG_CFG80211=y
+CONFIG_MAC80211=y
+CONFIG_USB_GADGET=y               # Para USB Debugging, ADB
+CONFIG_USB_CONFIGFS_ADB=y
+
+# --- Sensores ---
+CONFIG_SENSORS_CORE=y
+CONFIG_SENSORS_MMA8450=y          # Acelerometro
+CONFIG_SENSORS_BMA250=y           # Acelerometro
+CONFIG_SENSORS_MPU6050=y          # Giroscopio/Acelerometro
+CONFIG_SENSORS_LIS3MDL=y          # Magnetometro
+
+# --- Binder e IPC ---
+CONFIG_ANDROID_BINDER_IPC=y
+CONFIG_ANDROID_BINDER_IPC_BUFFER_SIZE_SMALL=y # Reduz tamanho do buffer Binder para latencia
+CONFIG_ANDROID_BINDER_IPC_LAZY_ALLOC=n       # Alocacao EAGER para evitar latencia no primeiro uso
+
+# --- Seguranca ---
+CONFIG_SECURITY=y
+CONFIG_SECURITY_SELINUX=y         # Politica de acesso mandatorio
+CONFIG_TRUSTED_KEYS=y
+CONFIG_EFUSE=y                    # Driver para eFuses (desbloqueio OEM, IDs)
+
+# --- Filesystem ---
+CONFIG_EXT4_FS=y
+CONFIG_TMPFS=y
+CONFIG_DEVTMPFS=y
