@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComandroOS Docs: Modo Fastboot e Segurança OCaml</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #004d99;
+            border-bottom: 2px solid #004d99;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+        }
+        .code-block {
+            background-color: #e9ecef;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .security-box {
+            border-left: 5px solid #cc0000; /* Vermelho para Segurança Crítica */
+            background-color: #ffeeee;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            🔒 Modo Fastboot no ComandroOS: Flashing Seguro
+        </h1>
+
+        <p>
+            O Modo Fastboot é um protocolo de comunicação e ferramenta crítica de baixo nível, essencial para o diagnóstico, recuperação e, mais importante, para a **atualização do firmware** (flashing) de qualquer partição do dispositivo.
+        </p>
+
+        <h2>1. Protocolo Core: <code>fastboot.cc</code> (C++)</h2>
+        
+        <p>
+            O coração do Fastboot reside no módulo C++ (<code>fastboot.cc</code>). Este módulo de kernel de baixo nível é responsável por:
+        </p>
+        
+        <ul>
+            <li>Gerenciar a comunicação serial/USB com o computador host.</li>
+            <li>Ler comandos de protocolo (ex: <code>flash system</code>, <code>getvar</code>).</li>
+            <li>Chamar a rotina nativa de gravação de memória (<code>native_vfs_flash_partition</code>) para gravar novos dados na memória flash do dispositivo.</li>
+            <li>Enviar respostas de status (<code>OKAY</code>, <code>FAIL</code>, <code>INFO</code>).</li>
+        </ul>
+
+        <div class="code-block">
+            // Exemplo de resposta no protocolo C++
+            // send_response(FB_STATUS_OKAY, "Download concluido.");
+        </div>
+
+        <h2>2. O Fator OCaml: Garantia de Integridade</h2>
+        
+        <p>
+            No ComandroOS, um comando de <code>flash</code> NUNCA é executado diretamente pelo <code>fastboot.cc</code>. Ele é interceptado por uma camada de segurança de alto nível escrita em **OCaml** (<code>fastboot_ui.ml</code>).
+        </p>
+
+        <div class="security-box">
+            <strong>Por que OCaml?</strong>
+            <p>Usamos OCaml devido à sua robustez, tipagem estática forte e segurança. O ambiente OCaml atua como um <strong>'validador de guarda'</strong> antes de permitir que o código C++ de baixo nível manipule a memória flash. Isso previne o 'tijolamento' (bricking) do dispositivo causado por arquivos de firmware corrompidos ou incompatíveis.</p>
+        </div>
+
+        <h3>Funções do <code>fastboot_ui.ml</code>:</h3>
+        
+        <ul>
+            <li><strong>Validação de Hash:</strong> Garante que o pacote de firmware a ser flasheado corresponda a um *hash* (SHA-256) conhecido e aprovado.</li>
+            <li><strong>Verificação de Tamanho:</strong> Confirma que o tamanho do arquivo a ser gravado é exatamente o tamanho esperado para a partição, evitando gravações parciais.</li>
+            <li><strong>Tipagem de Partição:</strong> Usa a tipagem forte do OCaml para garantir que apenas comandos bem formados e para partições válidas sejam processados.</li>
+        </ul>
+
+        <h3>Exemplo de Validação (OCaml):</h3>
+        <p>
+            No OCaml, o comando de *flash* deve primeiro ser validado contra o banco de dados de firmware seguro antes de passar o sinal verde para o kernel:
+        </p>
+        <div class="code-block">
+            (* OCaml - fastboot_ui.ml *)
+            let validate_firmware partition_name input_hash input_size =
+                (* ... logica de comparacao com hashes e tamanhos conhecidos ... *)
+                if valid_and_safe then true else false
+        </div>
+
+        <h2>3. Sequência de Flash (Comando Host)</h2>
+        
+        <p>A sequência para um flash seguro de uma partição 'system' é:</p>
+        
+        <ol>
+            <li><strong>Host Envia:</strong> <code>fastboot download:200000000</code> (Prepara para receber 200MB de dados).</li>
+            <li><strong>ComandroOS C++:</strong> Aloca o buffer e envia <code>INFO00000000</code>.</li>
+            <li><strong>Host Envia:</strong> O pacote de 200MB de dados binários.</li>
+            <li><strong>Host Envia:</strong> <code>fastboot flash system</code> (Este é o comando que aciona o validador OCaml).</li>
+            <li><strong>ComandroOS OCaml:</strong> O <code>fastboot_ui.ml</code> valida o hash do buffer baixado e o tamanho.</li>
+            <li><strong>Se Válido:</strong> O OCaml sinaliza o C++ para chamar <code>native_vfs_flash_partition()</code>.</li>
+            <li><strong>Resposta Final:</strong> <code>OKAYParticao flashed com sucesso.</code></li>
+        </ol>
+
+    </div>
+</body>
+</html>
