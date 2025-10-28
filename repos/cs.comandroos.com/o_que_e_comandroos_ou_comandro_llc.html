@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComandroOS: O Que Somos?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #004d99;
+            border-bottom: 2px solid #004d99;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+        }
+        p, ul {
+            margin-bottom: 20px;
+        }
+        .definition-box {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .os-box {
+            border-left: 5px solid #28a745; /* Verde para Código Aberto */
+            background-color: #e6ffed;
+        }
+        .llc-box {
+            border-left: 5px solid #ffc107; /* Amarelo/Laranja para Entidade Legal */
+            background-color: #fff8e1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            🔍 ComandroOS e Comandro LLC: Esclarecendo a Diferença
+        </h1>
+        
+        <p>
+            É fundamental para a transparência do nosso ecossistema entender a distinção clara entre o <strong>ComandroOS</strong> (o projeto de código aberto) e a <strong>Comandro LLC</strong> (a entidade legal privada que oferece serviços e suporte).
+        </p>
+
+        <h2>1. O Que É ComandroOS?</h2>
+        
+        <div class="definition-box os-box">
+            <h3>Projeto de Kernel e Código Aberto</h3>
+            <p><strong>ComandroOS</strong> é o próprio sistema operacional, incluindo o kernel (escrito em C, C++, e Rust), o ambiente de execução Java (JVM), e todos os pacotes de sistema de baixo nível que garantem a meta de latência ultra-baixa (&lt;1ms I/O).</p>
+            <ul>
+                <li><strong>Natureza:</strong> Projeto de código aberto, mantido sob a licença [Licença Simluada, ex: Apache 2.0/GPL].</li>
+                <li><strong>Propósito:</strong> Fornecer uma base de sistema operacional eficiente, segura e previsível para dispositivos de alto desempenho e sistemas embarcados.</li>
+                <li><strong>Governança:</strong> Supervisionado pela **ComandroOS Foundation** (entidade sem fins lucrativos) para garantir que o desenvolvimento permaneça guiado pela comunidade e pelos princípios de baixa latência.</li>
+                <li><strong>Onde Encontrar:</strong> Todo o código está disponível publicamente em nosso <a href="https://github.com/ComandroOS/kernel-core" target="_blank">repositório no GitHub</a>.</li>
+            </ul>
+        </div>
+
+        <h2>2. O Que É Comandro LLC?</h2>
+        
+        <div class="definition-box llc-box">
+            <h3>Empresa de Serviços e Suporte</h3>
+            <p>A <strong>Comandro LLC</strong> (Limited Liability Company) é uma empresa privada, separada da Fundação, focada em fornecer soluções e suporte comerciais baseados na tecnologia ComandroOS.</p>
+            <ul>
+                <li><strong>Natureza:</strong> Entidade com fins lucrativos.</li>
+                <li><strong>Propósito:</strong>
+                    <ul>
+                        <li>Fornecer **suporte empresarial** (SLA) para fabricantes que usam o ComandroOS.</li>
+                        <li>Oferecer **customizações de drivers** e otimizações de kernel específicas para hardware proprietário.</li>
+                        <li>Vender **ferramentas de desenvolvimento e diagnóstico premium** (que não fazem parte do kernel de código aberto).</li>
+                    </ul>
+                </li>
+                <li><strong>Relação com o Código:</strong> A LLC utiliza o código do ComandroOS (sob a licença) para criar seus produtos e serviços, mas **o desenvolvimento principal do kernel permanece de responsabilidade da Fundação e da comunidade.**</li>
+            </ul>
+        </div>
+
+        <h2>3. Conclusão da Estrutura</h2>
+        <p>
+            Em resumo, se você está interessado em **programar drivers, corrigir bugs no kernel ou participar da arquitetura**, você está lidando com o **ComandroOS** (a Fundação). Se você é uma **empresa buscando suporte dedicado, customizações ou ferramentas de flash profissionais**, você contata a **Comandro LLC**.
+        </p>
+        <p>
+            Esta separação garante que o projeto de código aberto permaneça fiel à sua missão, enquanto permite um ecossistema comercial saudável para sustentar a inovação.
+        </p>
+
+    </div>
+</body>
+</html>
