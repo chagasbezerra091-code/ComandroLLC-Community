@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lithium Safety Monitor | Documentação COOSP</title>
+    <style>
+        /* Reutilizando estilos base do COOSP */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f9; color: #333; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        header { background-color: #CC0000; color: white; padding: 15px 0; text-align: center; border-radius: 8px 8px 0 0; }
+        header h1 { margin: 0; font-size: 2.2em; }
+        .content h2 { color: #880000; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px; }
+        .content p { margin-bottom: 20px; }
+        ul { list-style-type: disc; margin-left: 20px; }
+        .critical-box { background-color: #ffdddd; border-left: 5px solid #cc0000; padding: 15px; margin: 15px 0; border-radius: 4px; font-weight: bold; }
+        .code-snippet { background-color: #eee; padding: 10px; border-radius: 4px; overflow-x: auto; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.9em; }
+        footer { text-align: center; padding: 20px; margin-top: 30px; border-top: 1px solid #ddd; font-size: 0.9em; color: #666; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Lithium Safety Monitor (LSM)</h1>
+        <p>Módulo de Resposta a Falhas Catastróficas do Kernel-Core</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="content">
+            
+            <h2>🛡️ Visão Geral do Módulo</h2>
+            
+            <p>
+                O **Lithium Safety Monitor (LSM)** é um componente crucial, residente no `kernel-core`, projetado para garantir a segurança física do usuário. Diferente de módulos de gerenciamento de bateria comuns, o LSM opera em tempo real estrito para detectar falhas elétricas ou químicas que indiquem um evento térmico descontrolado (Thermal Runaway) ou vazamento de lítio.
+            </p>
+            <p>
+                A prioridade do LSM é **Zero Latência de Resposta**, garantindo que, no momento da detecção de uma falha crítica, o sistema reaja e desligue o hardware antes que a falha se propague.
+            </p>
+
+            <div class="critical-box">
+                🚨 **Atenção:** Uma vez que o LSM confirma uma falha CRÍTICA (por exemplo, leitura acima de 5.0 PPM e curto-circuito), a ação é irreversível: o sistema aciona o alerta de voz e inicia o desligamento imediato (*Hard Halt*).
+            </div>
+
+            <h2>🔍 Mecanismos de Detecção em Tempo Real</h2>
+            
+            <p>O LSM utiliza uma abordagem de dupla verificação que exige a confirmação de dois eventos de hardware antes de declarar uma falha catastrófica:</p>
+            
+            <ul>
+                <li>
+                    <strong>Detecção Química/Quântica (ADC/I2C):</strong> A função <code>readLithiumSensorPPM()</code> acessa diretamente um sensor químico dedicado, lendo o potencial de detecção de íons de lítio ou o *stress* eletroquímico da célula. Um valor acima de <code>CRITICAL_LITHIUM_PPM</code> (5.0 ppm) é o primeiro gatilho.
+                </li>
+                <li>
+                    <strong>Detecção Elétrica (Registrador):</strong> A função <code>isShortCircuitDetected()</code> lê um registrador de hardware de baixo nível (ex: endereço <code>0xFF00FF00</code>) no PMIC (Power Management IC) ou SoC. A presença da <code>SC_REGISTER_FLAG</code> confirma que ocorreu um curto-circuito grave, o que é consistente com a falha catastrófica onde **"multiple motherboard circuits to fry"** (várias placas da placa-mãe fritaram).
+                </li>
+            </ul>
+
+            <h2>🗣️ Rotina de Desligamento Catastrófico (`triggerCatastrophicShutdown`)</h2>
+            
+            <p>Se as duas condições acima forem atendidas, o kernel desvia a execução para a rotina de segurança, que **não pode ser interrompida**:</p>
+            
+            <ol>
+                <li>
+                    **Alerta Visual Imediato:** A FFI <code>comandro_ffi_display_fatal_message("LITHIUM DETECTED")</code> é chamada, instruindo a interface a preencher o canto da tela com a mensagem de alerta em vermelho forte.
+                </li>
+                <li>
+                    **Instruções de Voz (Inglês):** A FFI <code>comandro_ffi_voice_alert()</code> é disparada para fornecer instruções de segurança urgentes e claras em inglês, incluindo a razão da falha (dano à placa-mãe) e a ordem para **descartar imediatamente o dispositivo**.
+                </li>
+                <li>
+                    **Auditoria e Log:** O erro é gravado na NVRAM para auditoria de falha (*forensics*).
+                </li>
+                <li>
+                    **Hard Halt:** A chamada <code>SystemHalt::powerOffImmediate()</code> desliga a energia do SoC e de todos os componentes de forma imediata e brutal (não é um desligamento gracioso), para mitigar a propagação do fogo ou dano térmico.
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <footer>
+        <p>Este módulo garante a segurança do hardware acima da operação do sistema. Desenvolvido em C++ para Tempo Real.</p>
+        <p><a href="o_que_e_coosp.html">Voltar para a Introdução do COOSP</a>.</p>
+    </footer>
+
+</body>
+</html>
