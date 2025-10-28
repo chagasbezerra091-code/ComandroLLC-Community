@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComandroOS Docs: Driver Touchscreen (Rust)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #004d99;
+            border-bottom: 2px solid #004d99;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+        }
+        .code-block {
+            background-color: #e9ecef;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .info-box {
+            border-left: 5px solid #ff9800;
+            background-color: #fff3e0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        strong {
+            color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            Documentação do Driver de Touchscreen (Rust)
+            <span style="font-size: 0.8em; color: #555;">(kernel-core/sys/drivers/touchscreen.rs)</span>
+        </h1>
+
+        <div class="info-box">
+            <strong>Foco em Latência Zero (Zero-Latency Focus):</strong> Este driver é crucial para o KPI de latência de I/O do ComandroOS (meta de <1ms). Ele implementa um padrão de *Zero-Copy* diretamente no IRQ (Interrupt Request), garantindo a entrega imediata de eventos.
+        </div>
+
+        <h2>1. Como um Driver de Touchscreen Funciona?</h2>
+        
+        <p>
+            Drivers de touchscreen são controladores de comunicação entre o kernel e o hardware sensível ao toque (o chip controlador, como um Synaptics ou Goodix). O ciclo de vida de um toque é:
+        </p>
+        
+        <ol>
+            <li><strong>Toque na Tela:</strong> O dedo altera a capacitância da grade de sensores.</li>
+            <li><strong>IRQ (Interrupção):</strong> O chip controlador da tela envia um sinal elétrico (*Interrupt Request*) para o GIC (Controlador Global de Interrupções) do processador, indicando "Tenho um novo evento!".</li>
+            <li><strong>Kernel Dispatch:</strong> O kernel interrompe o que está fazendo e chama a **Rotina do Driver** (`process_irq_event` no nosso caso) associada àquela linha de IRQ.</li>
+            <li><strong>Leitura de Hardware:</strong> O driver lê o(s) registrador(es) de memória do controlador de toque (portas I/O) para obter as coordenadas <strong>brutas</strong> (X, Y) e a pressão.</li>
+            <li><strong>Injeção de Evento:</strong> O driver insere o evento no <strong>Buffer de Entrada</strong> do kernel.</li>
+            <li><strong>Processamento:</strong> O subsistema de Input (InputManager.java) lê o buffer, calibra as coordenadas e envia o evento para a UI.</li>
+        </ol>
+
+        <h2>2. Partes Críticas do <code>touchscreen.rs</code></h2>
+        
+        <p>
+            O driver do ComandroOS em Rust é projetado para ser o mais seguro e rápido possível, delegando a inicialização de hardware para código C/C++ e focando na manipulação segura de ponteiros de memória e interrupções.
+        </p>
+
+        <h3>2.1. Estrutura de Evento Bruto</h3>
+        <p>
+            A estrutura <code>TouchEvent</code> define o formato exato dos dados lidos do hardware. O atributo <code>#[repr(C)]</code> é essencial para garantir que a estrutura tenha o mesmo layout de memória tanto no Rust quanto no C/C++ (para comunicação JNI e buffers):
+        </p>
+        <div class="code-block">
+            #[repr(C)]
+            pub struct TouchEvent {
+                pub timestamp_ns: u64,
+                pub event_type: u8, // DOWN, UP, MOVE
+                pub x_raw: u16,     // Coordenada não calibrada
+                // ...
+            }
+        </div>
+
+        <h3>2.2. Inicialização do Driver</h3>
+        <p>
+            A função <code>registerDriver</code> (que é <code>extern "C"</code> para ser chamada pelo Java/C) configura o driver. O ponto mais importante é o recebimento do endereço do buffer de eventos:
+        </p>
+        <div class="code-block">
+            #[no_mangle]
+            pub extern "C" fn registerDriver(event_buffer_addr: *mut TouchEvent) -> i32 {
+                // ...
+                unsafe {
+                    // Armazena o ponteiro do kernel para uso no IRQ handler
+                    DRIVER_STATE.event_queue_ptr = event_buffer_addr; 
+                    // ...
+                    native_register_irq(42, process_irq_event);
+                }
+                // ...
+            }
+        </div>
+
+        <h3>2.3. O Handler de Interrupção (O Coração do Driver)</h3>
+        <p>
+            Esta função é chamada imediatamente quando o hardware gera um IRQ. Ela executa a operação **Zero-Copy**: os dados lidos do hardware são escritos <strong>diretamente</strong> na memória do buffer do kernel, e o scheduler é notificado imediatamente, minimizando a latência.
+        </p>
+        <div class="code-block">
+            extern "C" fn process_irq_event() {
+                unsafe {
+                    // 1. Lê o hardware (chamada para C/C++)
+                    let event = native_read_hardware(HARDWARE_BASE_ADDR);
+
+                    // 2. Escrita de Zero-Copy usando ponteiros voláteis
+                    if !DRIVER_STATE.event_queue_ptr.is_null() {
+                        ptr::write_volatile(DRIVER_STATE.event_queue_ptr, event);
+                        
+                        // 3. Notificação Imediata
+                        native_notify_io_event(); // Acorda o InputManager.java thread
+                    }
+                }
+            }
+        </div>
+        <p>
+            A utilização de <code>ptr::write_volatile</code> no Rust é uma prática de baixo nível para garantir que o compilador não otimize a escrita, essencial para interações diretas com hardware e buffers de I/O.
+        </p>
+
+
+    </div>
+</body>
+</html>
