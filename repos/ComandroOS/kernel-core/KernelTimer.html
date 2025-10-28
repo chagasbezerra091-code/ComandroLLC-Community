@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ComandroOS Kernel Timer Status</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #333; margin: 20px; }
+        .container { max-width: 900px; margin: auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        h1 { color: #0078d4; border-bottom: 2px solid #0078d4; padding-bottom: 10px; }
+        h2 { color: #555; margin-top: 25px; }
+        .status-box { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 6px; }
+        .active-timers table { width: 100%; border-collapse: collapse; }
+        .active-timers th, .active-timers td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        .active-timers th { background-color: #e0e0e0; }
+        .critical { color: #d9534f; font-weight: bold; }
+        .normal { color: #5cb85c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ComandroOS Kernel Timer Manager (KTM)</h1>
+        <p>Documentação e Status de Tempo Real para <code>kernel-core/KernelTimer</code>.</p>
+
+        ---
+
+        <h2>1. Status do Hardware</h2>
+        <div class="status-box">
+            <p><strong>Hardware Clock Source:</strong> Generic ARM Timer (GPT)</p>
+            <p><strong>IRQ ID:</strong> 32 (Priority: <span class="critical">0 - CRITICAL</span>)</p>
+            <p><strong>Taxa de Tick (Base HZ):</strong> 1000 Hz (1ms por tick)</p>
+            <p><strong>Tempo Atual do Kernel (High-Res):</strong> <span id="kernel-time">...</span> ns</p>
+        </div>
+
+        ---
+
+        <h2>2. Atividade de Temporizadores de Software</h2>
+        <div class="status-box active-timers">
+            <p><strong>Total de Temporizadores Ativos:</strong> <span id="total-timers">3</span></p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Expira em (ns)</th>
+                        <th>Tipo</th>
+                        <th>Handler</th>
+                        <th>Latencia Max.</th>
+                    </tr>
+                </thead>
+                <tbody id="timers-list">
+                    <tr>
+                        <td>101</td>
+                        <td>45,678,900,000</td>
+                        <td class="critical">One-Shot</td>
+                        <td><code>Net_Rx_Timeout</code></td>
+                        <td><span class="critical">25 μs</span></td>
+                    </tr>
+                    <tr>
+                        <td>205</td>
+                        <td>1,000,000,000</td>
+                        <td class="normal">Periodic (1s)</td>
+                        <td><code>IPC_Heartbeat</code></td>
+                        <td>500 μs</td>
+                    </tr>
+                    <tr>
+                        <td>312</td>
+                        <td>50,000,000</td>
+                        <td class="critical">One-Shot</td>
+                        <td><code>Audio_LE_Sync</code></td>
+                        <td><span class="critical">5 μs</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        ---
+
+        <h2>3. Uso da API</h2>
+        <pre><code>
+// C++: Como agendar uma tarefa de alta prioridade em 50 milissegundos
+void my_audio_sync_fn(void* ctx) { /* ... */ }
+
+uint32_t timer_id = KernelTimer::instance().setTimer(
+    std::chrono::milliseconds(50), 
+    my_audio_sync_fn, 
+    nullptr, 
+    false // One-shot
+);
+        </code></pre>
+    </div>
+</body>
+</html>
