@@ -1,0 +1,18 @@
+{
+    // Este arquivo e carregado apenas em builds de desenvolvedor.
+    
+    // Controles de Acesso e Debug
+    "ENABLE_ROOT_ACCESS": true,
+    "ENABLE_ADB_OVER_BLUETOOTH": true,
+    
+    // Controles de Kernel/RTOS
+    "ENABLE_RT_DEBUG_LOG": true,
+    "OVERRIDE_SCHEDULER_PRIORITY": false,
+    
+    // Ferramentas de Profiling
+    "ENABLE_CPU_PROFILER": true,
+    "DUMP_STACK_ON_CRASH": true,
+    
+    // Funcoes Experimentais
+    "EXPERIMENTAL_NEW_SHELL": false 
+}
